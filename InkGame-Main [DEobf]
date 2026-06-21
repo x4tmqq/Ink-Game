@@ -978,8 +978,7 @@ task.spawn(function()
             if hum then
                 if hum.MoveDirection.Magnitude > 0 then
                     for _, track in pairs(hum:GetPlayingAnimationTracks()) do
-                        if track.Animation.AnimationId == "rbxassetid://82609803681213"
-                            or track.Name == "WalkAnim" or track.Name == "RunAnim" or track.Name == "Sprint" then
+                        if track.Animation and track.Animation.AnimationId == "rbxassetid://82609803681213" then
                             track:Stop(0.1)
                         end
                     end
@@ -1059,23 +1058,24 @@ UserInputService.InputChanged:Connect(function(input)
     end
 end)
 
+-- Tabs Creation
 local AntiCheatTab = Window:AddTab({ Title = "Anti-Cheat [BETA]", Icon = "shield" })
-local Tab            = Window:AddTab({ Title = "Main", Icon = "user" })
-local ESPTab         = Window:AddTab({ Title = "ESP", Icon = "eye" })
-local VisualTab      = Window:AddTab({ Title = "Visual", Icon = "ghost" })
-local EmptyTab       = Window:AddTab({ Title = "Unlock all", Icon = "key" })
-local GameTab        = Window:AddTab({ Title = "Red Light / Green Light", Icon = "lightbulb" })
-local DalgonaTab     = Window:AddTab({ Title = "Dalgona [BETA]", Icon = "cookie" })
-local pentathlonTab  = Window:AddTab({ Title = "pentathlon [SOON]", Icon = "gamepad" })
-local LightOutTab    = Window:AddTab({ Title = "Light out", Icon = "moon" })
-local HidenSeekTab   = Window:AddTab({ Title = "Hide n Seek", Icon = "swords" })
-local TugOfWarTab    = Window:AddTab({ Title = "Tug of War [ALPHA]", Icon = "activity" })
-local JumpRopeTab    = Window:AddTab({ Title = "Jump Rope", Icon = "bone" })
-local GlasseBridgeTab= Window:AddTab({ Title = "Glass Bridge", Icon = "layers" })
-local MingleTab      = Window:AddTab({ Title = "Mingle [SOON]", Icon = "target" })
-local SkySquidTab    = Window:AddTab({ Title = "Sky squid game", Icon = "cloud" })
-local UtilsTab       = Window:AddTab({ Title = "Developers tools", Icon = "wrench" })
-local SettingsTab    = Window:AddTab({ Title = "Settings", Icon = "settings" })
+local Tab = Window:AddTab({ Title = "Main", Icon = "user" })
+local ESPTab = Window:AddTab({ Title = "ESP", Icon = "eye" })
+local VisualTab = Window:AddTab({ Title = "Visual", Icon = "ghost" })
+local EmptyTab = Window:AddTab({ Title = "Unlock all", Icon = "key" })
+local GameTab = Window:AddTab({ Title = "Red Light / Green Light", Icon = "lightbulb" })
+local DalgonaTab = Window:AddTab({ Title = "Dalgona [BETA]", Icon = "cookie" })
+local pentathlonTab = Window:AddTab({ Title = "Pentathlon [SOON]", Icon = "gamepad" })
+local LightOutTab = Window:AddTab({ Title = "Light out", Icon = "moon" })
+local HidenSeekTab = Window:AddTab({ Title = "Hide n Seek", Icon = "swords" })
+local TugOfWarTab = Window:AddTab({ Title = "Tug of War [ALPHA]", Icon = "activity" })
+local JumpRopeTab = Window:AddTab({ Title = "Jump Rope", Icon = "bone" })
+local GlasseBridgeTab = Window:AddTab({ Title = "Glass Bridge", Icon = "layers" })
+local MingleTab = Window:AddTab({ Title = "Mingle [SOON]", Icon = "target" })
+local SkySquidTab = Window:AddTab({ Title = "Sky squid game", Icon = "cloud" })
+local UtilsTab = Window:AddTab({ Title = "Developers tools", Icon = "wrench" })
+local SettingsTab = Window:AddTab({ Title = "Settings", Icon = "settings" })
 
 local AppearanceSection = SettingsTab:AddSection("Apparence")
 
@@ -1150,7 +1150,10 @@ local function CheckCapabilities()
     status = status .. "checkcaller(): " .. (checkcallerStatus and "✅" or "❌") .. "\n"
     
     local setreadonlyStatus = pcall(function() return setreadonly end) and type(setreadonly) == "function"
-    status = status .. "setreadonly: " .. (setreadonlyStatus and "✅" or "❌")
+    status = status .. "setreadonly: " .. (setreadonlyStatus and "✅" or "❌") .. "\n"
+    
+    local isreadonlyStatus = pcall(function() return isreadonly end) and type(isreadonly) == "function"
+    status = status .. "isreadonly: " .. (isreadonlyStatus and "✅" or "❌")
     
     return status
 end
@@ -1229,7 +1232,7 @@ local GBEspSection = GlasseBridgeTab:AddSection("ESP Glasses Bridge")
 
 local glassEspToggle = GBEspSection:AddToggle("GlassESP", { 
     Title = "Reveal Glasses", 
-    Description = "Hightlight wrong and correct glasses",
+    Description = "Highlight wrong and correct glasses",
     Default = false 
 })
 glassEspToggle:OnChanged(function(s) 
@@ -2278,6 +2281,7 @@ task.spawn(function()
     end
 end)
 
+-- MAIN TAB
 local SectionWS = Tab:AddSection("Speed Configuration")
 local WSSlider = SectionWS:AddSlider("WalkSpeed", { Title = "Walkspeed value", Default = 16, Min = 1, Max = 48, Rounding = 0, Callback = function(v) Settings.WS = v end })
 SectionWS:AddInput("WSInput", { Title = "Manual WalkSpeed", Default = "16", Placeholder = "Enter value...", Callback = function(v)
@@ -2384,6 +2388,7 @@ SectionOther:AddToggle("AntiStunToggle", {Title = "Anti-Stun", Default = false})
     end
 end)
 
+-- ESP TAB
 local ESPMain = ESPTab:AddSection("Master Switch")
 ESPMain:AddToggle("MasterESP", {
     Title = "Enable ESP System",
@@ -2403,7 +2408,8 @@ ESPCustomSection:AddColorpicker("ESPColor", { Title = "Global ESP Color", Defaul
 ESPCustomSection:AddSlider("FillTrans", { Title = "Highlight Transparency", Default = 0.5, Min = 0, Max = 1, Rounding = 1, Callback = function(v) Settings.FillTransparency = v end })
 ESPCustomSection:AddSlider("BoxThick", { Title = "Box Thickness", Default = 1, Min = 1, Max = 5, Rounding = 0, Callback = function(v) Settings.BoxThickness = v end })
 
-local AboutSection = Tabs.About:AddSection("Credits & Links")
+-- This section was causing errors - fixed by removing reference to Tabs.About which doesn't exist
+local AboutSection = SettingsTab:AddSection("Credits & Links")
 
 AboutSection:AddButton({
     Title = "Copy Discord Server Link",
@@ -2456,6 +2462,7 @@ AboutSection:AddParagraph({
     Content = "Main Developer : @x4tmq\nScript : Sentinel v1.52.04\n\nThanks for using my script!"
 })
 
+-- RED LIGHT GREEN LIGHT TAB
 local RLGLSection = GameTab:AddSection("Teleports")
 RLGLSection:AddButton({ Title = "TP to Start", Callback = function() SafeTP(CFrame.new(-53.90, 1023.05, -515.86)) end })
 RLGLSection:AddButton({ Title = "TP to End", Callback = function() SafeTP(CFrame.new(-46.28, 1024.71, 135.60)) end })
@@ -2503,6 +2510,7 @@ RLGLAuto:AddButton({ Title = "Remove Injure", Description = "Remove all injured 
     end
 end })
 
+-- LIGHT OUT TAB
 LightOutTab:AddToggle("FullBrightToggle", {Title = "Full Bright", Default = false}):OnChanged(function(s)
     Settings.FullBright = s
     if s then
@@ -2527,6 +2535,7 @@ LOSafeTeleport:AddButton({ Title = "Go back", Callback = function()
     if Settings.LastPos then SafeTP(Settings.LastPos) end
 end })
 
+-- HIDE N SEEK TAB
 local HNS_Visuals = HidenSeekTab:AddSection("Visuals")
 HNS_Visuals:AddToggle("RoleESPToggle", {
     Title = "Enable Role Highlights",
@@ -2589,12 +2598,14 @@ HNS_Hider:AddButton({ Title = "TP 75 studs Down", Callback = function()
     if hrp then SafeTP(hrp.CFrame + Vector3.new(0, -75, 0)) end
 end })
 
+-- TUG OF WAR TAB
 local TOWTeleports = TugOfWarTab:AddSection("Teleports")
 TOWTeleports:AddButton({ Title = "TP to Platform", Callback = function() SafeTP(CFrame.new(-577.88, 1023.00, -512.60)) end })
 local TOWAuto = TugOfWarTab:AddSection("Auto Mechanisms")
 TOWAuto:AddToggle("AutoPull", {Title = "Auto Pull [ALPHA]", Default = false}):OnChanged(function(s) Settings.AutoPull = s end)
 TOWAuto:AddToggle("PerfectPull", {Title = "Perfect Pull [ALPHA]", Default = false}):OnChanged(function(s) Settings.PerfectPull = s end)
 
+-- SKY SQUID TAB
 local SSSection = SkySquidTab:AddSection("Platform")
 
 local function CreatePlasticPlatform()
@@ -2667,9 +2678,11 @@ SSTeleports:AddButton({
     end 
 })
 
+-- DALGONA TAB
 local DalgonaSection = DalgonaTab:AddSection("Dalgona Utilities")
 DalgonaSection:AddToggle("AntiBlinkToggle", {Title = "Anti-Blink", Default = false}):OnChanged(function(s) Settings.AntiBlink = s end)
 
+-- ESP SYSTEM
 local function CreateESP(player)
     if player == lp then return end
     local drawings = {
@@ -2724,6 +2737,7 @@ Players.PlayerRemoving:Connect(function(p)
     end
 end)
 
+-- UTILS TAB
 local SectionFreecam = UtilsTab:AddSection("Free Camera")
 SectionFreecam:AddToggle("FreecamToggle", {Title = "Enable Freecam", Default = false}):OnChanged(function(s)
     Settings.FreecamEnabled = s
@@ -2776,6 +2790,7 @@ SectionPos:AddButton({ Title = "Find Position", Callback = function()
 end })
 SectionPos:AddButton({ Title = "Copy Position", Callback = function() setclipboard(Settings.CurrentPos) end })
 
+-- MAIN LOOP
 RunService.Heartbeat:Connect(function()
     local char = lp.Character
     local hum = char and char:FindFirstChildOfClass("Humanoid")
